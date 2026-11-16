@@ -1,111 +1,108 @@
 # ZDownload
 
-Aplikasi web lokal untuk mengekstrak audio dari **YouTube** dan **YouTube Music**. Hasilnya lengkap dengan sampul album, judul, dan nama artis yang sudah tertanam di file.
+A local web app that extracts audio from **YouTube** and **YouTube Music**. Album art, title, and artist are embedded in every file.
 
-Tampilan tersedia dalam **Bahasa Indonesia** dan **English**.
-
-> 🇬🇧 English summary is at the [bottom of this page](#english).
+The interface is available in **English** and **Indonesian** (toggle in the top-right corner).
 
 ---
 
-## Daftar Isi
+## Table of Contents
 
-- [Fitur](#fitur)
-- [Soal Kualitas Audio (Baca Dulu)](#soal-kualitas-audio-baca-dulu)
-- [Kebutuhan](#kebutuhan)
-- [Instalasi](#instalasi)
-- [Cara Pakai](#cara-pakai)
-- [Perintah npm](#perintah-npm)
-- [Konfigurasi](#konfigurasi)
-- [Link yang Didukung](#link-yang-didukung)
-- [Struktur Folder](#struktur-folder)
-- [Cara Kerja & API](#cara-kerja--api)
-- [Keamanan](#keamanan)
+- [Features](#features)
+- [About Audio Quality (Read This First)](#about-audio-quality-read-this-first)
+- [Requirements](#requirements)
+- [Installation](#installation)
+- [Usage](#usage)
+- [npm Scripts](#npm-scripts)
+- [Configuration](#configuration)
+- [Supported Links](#supported-links)
+- [Project Structure](#project-structure)
+- [How It Works & API](#how-it-works--api)
+- [Security](#security)
 - [Deployment](#deployment)
 - [Troubleshooting](#troubleshooting)
-- [Keterbatasan yang Diketahui](#keterbatasan-yang-diketahui)
-- [Disclaimer Hukum](#disclaimer-hukum)
-- [Kredit & Lisensi Pihak Ketiga](#kredit--lisensi-pihak-ketiga)
-- [English](#english)
+- [Known Limitations](#known-limitations)
+- [Legal Disclaimer](#legal-disclaimer)
+- [Credits & Third-Party Licenses](#credits--third-party-licenses)
 
 ---
 
-## Fitur
+## Features
 
-- 🎵 Mendukung link YouTube, YouTube Music, `youtu.be`, dan versi mobile.
-- 🎚️ Tiga pilihan format:
-  - **Original**, stream asli tanpa konversi
+- 🎵 Works with YouTube, YouTube Music, `youtu.be`, and mobile links.
+- 🎚️ Three formats:
+  - **Original**, the untouched stream
   - **MP3** 320 kbps
   - **FLAC**
-- 🖼️ Sampul album dan metadata (judul, artis) otomatis disematkan ke file.
-- 🌐 Tombol ganti bahasa ID / EN, pilihannya diingat oleh browser.
-- 📋 Tombol **Tempel**: membaca link dari clipboard dan langsung menganalisisnya.
-- ⚙️ `npm install` otomatis mengunduh yt-dlp dan ffmpeg sesuai OS.
-- 🖥️ Berjalan di **Windows**, **Linux**, dan **macOS**.
-- 🔒 Aman secara default:
-  - hanya bisa diakses dari komputer sendiri
-  - input link divalidasi
-  - jumlah proses yang berjalan bersamaan dibatasi
+- 🖼️ Album art and metadata (title, artist) are embedded automatically.
+- 🌐 English / Indonesian language toggle, remembered by the browser.
+- 📋 **Paste** button: reads the link from the clipboard and analyzes it right away.
+- ⚙️ `npm install` automatically downloads yt-dlp and ffmpeg for your OS.
+- 🖥️ Runs on **Windows**, **Linux**, and **macOS**.
+- 🔒 Secure by default:
+  - reachable only from your own computer
+  - links are validated
+  - the number of jobs running at once is limited
 
 ---
 
-## Soal Kualitas Audio (Baca Dulu)
+## About Audio Quality (Read This First)
 
-YouTube **tidak menyediakan audio lossless maupun hi-res**. Audio terbaik yang tersedia adalah stream terkompresi, biasanya **Opus sekitar 130–160 kbps, 48 kHz**. Semua format di aplikasi ini berasal dari stream yang sama:
+YouTube **does not offer lossless or hi-res audio**. The best stream available is compressed, typically **Opus at about 130–160 kbps, 48 kHz**. Every format in this app comes from that same stream:
 
-| Format | Isinya | Kualitas | Ukuran (lagu 5 menit) |
+| Format | What it is | Quality | Size (5-min song) |
 |---|---|---|---|
-| **Original** ⭐ | Stream asli YouTube, tanpa konversi (`.opus` / `.m4a`) | **Tertinggi yang bisa didapat** | ~5–6 MB |
-| MP3 320 kbps | Original yang dikompres ulang ke MP3 | Sedikit di bawah Original, praktis tidak terdengar bedanya | ~11 MB |
-| FLAC | Original yang disimpan ulang ke FLAC | **Sama dengan Original**, tidak lebih bagus | ~75 MB |
+| **Original** ⭐ | YouTube's stream, saved as-is (`.opus` / `.m4a`) | **Best quality available** | ~5–6 MB |
+| MP3 320 kbps | Original re-encoded to MP3 | Slightly below Original, practically inaudible | ~11 MB |
+| FLAC | Original re-saved as FLAC | **Identical to Original**, not better | ~75 MB |
 
-Catatan:
-- File FLAC akan terbaca sebagai **24-bit / 48 kHz**. Itu hasil konversi, **bukan hi-res asli**. Bagian suara yang sudah dibuang YouTube tidak bisa kembali.
-- Gunakan **Original** untuk kualitas terbaik.
-- Gunakan **MP3** kalau pemutar musikmu tidak mendukung Opus (beberapa pemutar lama atau di mobil).
-- FLAC hanya berguna kalau file akan diedit atau dikonversi ulang, supaya tidak ada pengurangan kualitas tambahan.
-- Mau FLAC yang benar-benar lossless atau hi-res? Belilah dari CD atau toko musik seperti Qobuz atau Bandcamp.
+Notes:
+- FLAC files will report **24-bit / 48 kHz**. That comes from the conversion and is **not real hi-res**. Detail that YouTube already discarded cannot be recovered.
+- Use **Original** for the best quality.
+- Use **MP3** if your player doesn't support Opus (some older players and car stereos).
+- FLAC is only useful if you plan to edit or re-convert the file, so no further quality is lost.
+- Want truly lossless or hi-res audio? Buy it from a CD or a store such as Qobuz or Bandcamp.
 
-Cara mengecek sendiri:
+To check a file yourself:
 
 ```bash
-bin/ffprobe -hide_banner "nama lagu.flac"    # atau ffprobe dari sistem
+bin/ffprobe -hide_banner "song name.flac"    # or the system ffprobe
 ```
 
-Untuk melihat potongan frekuensinya, buka file di **Spek** atau **Audacity** (tampilan spectrogram). Audio dari YouTube biasanya terpotong rata di sekitar 16–20 kHz.
+To see the frequency cutoff, open the file in **Spek** or **Audacity** (spectrogram view). YouTube audio usually shows a hard cutoff around 16–20 kHz.
 
 ---
 
-## Kebutuhan
+## Requirements
 
-| Kebutuhan | Keterangan |
+| Requirement | Notes |
 |---|---|
 | **Node.js 18+** | [nodejs.org](https://nodejs.org) |
-| Koneksi internet | Untuk mengunduh tool saat instalasi (yt-dlp ±40 MB, ffmpeg ±150–200 MB) dan untuk mengakses YouTube |
-| `tar` | Sudah bawaan di Windows 10 (versi 1803+), Linux, dan macOS |
-| `xz` (khusus Linux) | Untuk mengekstrak ffmpeg; biasanya sudah terpasang (`sudo apt install xz-utils`) |
-| **ffmpeg** (khusus macOS) | Pasang sendiri: `brew install ffmpeg` |
+| Internet connection | To download the tools during install (yt-dlp ~40 MB, ffmpeg ~150–200 MB) and to reach YouTube |
+| `tar` | Built into Windows 10 (version 1803+), Linux, and macOS |
+| `xz` (Linux only) | To extract ffmpeg; usually preinstalled (`sudo apt install xz-utils`) |
+| **ffmpeg** (macOS only) | Install it yourself: `brew install ffmpeg` |
 
-**yt-dlp** dan **ffmpeg** tidak perlu dipasang manual di Windows dan Linux, karena `npm install` mengurusnya.
+On Windows and Linux you don't need to install **yt-dlp** or **ffmpeg** manually, because `npm install` takes care of it.
 
 ---
 
-## Instalasi
+## Installation
 
 ```bash
-git clone <url-repo-ini> zdownload
+git clone <repo-url> zdownload
 cd zdownload
 npm install
 ```
 
-Selama `npm install`, skrip `scripts/setup.js` otomatis:
+During `npm install`, the `scripts/setup.js` script automatically:
 
-1. Mengunduh **yt-dlp** versi terbaru dari [rilis resmi GitHub](https://github.com/yt-dlp/yt-dlp/releases) ke `bin/`.
-2. Mengecek apakah **ffmpeg** dan **ffprobe** sudah terpasang di sistem.
-   - Kalau sudah, yang di sistem itu yang dipakai.
-   - Kalau belum, build dari [BtbN/FFmpeg-Builds](https://github.com/BtbN/FFmpeg-Builds) diunduh dan diekstrak ke `bin/` (Windows x64, Linux x64, Linux arm64).
+1. Downloads the latest **yt-dlp** from its [official GitHub releases](https://github.com/yt-dlp/yt-dlp/releases) into `bin/`.
+2. Checks whether **ffmpeg** and **ffprobe** are already installed on the system.
+   - If they are, the system versions are used.
+   - If not, a build from [BtbN/FFmpeg-Builds](https://github.com/BtbN/FFmpeg-Builds) is downloaded and extracted into `bin/` (Windows x64, Linux x64, Linux arm64).
 
-Contoh output:
+Example output:
 
 ```
 ZDownload setup (linux-x64)
@@ -115,7 +112,7 @@ ZDownload setup (linux-x64)
 Ready. Start with: npm start
 ```
 
-Kalau gagal, misalnya karena koneksi putus, jalankan ulang:
+If setup fails (for example, the connection drops), run it again:
 
 ```bash
 npm run setup
@@ -123,45 +120,45 @@ npm run setup
 
 ---
 
-## Cara Pakai
+## Usage
 
-1. Jalankan server:
+1. Start the server:
    ```bash
    npm start
    ```
-2. Buka **http://localhost:3000** di browser.
-3. Tempel link lagu, lalu klik **Analisis** (atau klik **Tempel** untuk mengambil link dari clipboard).
-4. Pilih format: **Original**, **MP3**, atau **FLAC**.
-5. Klik **Unduh Audio Sekarang**. File otomatis tersimpan ke folder Downloads.
+2. Open **http://localhost:3000** in your browser.
+3. Paste a song link and click **Analyze** (or click **Paste** to grab the link from the clipboard).
+4. Choose a format: **Original**, **MP3**, or **FLAC**.
+5. Click **Download Audio Now**. The file is saved to your Downloads folder automatically.
 
-Tombol **Unduh ulang** di kartu hasil hanya diperlukan kalau download otomatis diblokir browser.
+The **Download again** button on the result card is only needed if the browser blocked the automatic download.
 
 ---
 
-## Perintah npm
+## npm Scripts
 
-| Perintah | Fungsi |
+| Command | Purpose |
 |---|---|
-| `npm install` | Memasang dependensi **dan** mengunduh yt-dlp + ffmpeg |
-| `npm start` / `npm run dev` | Menjalankan server |
-| `npm run setup` | Mengulang pengunduhan tool yang belum ada |
-| `npm run update-tools` | Memaksa unduh ulang yt-dlp dan ffmpeg versi terbaru |
+| `npm install` | Installs dependencies **and** downloads yt-dlp + ffmpeg |
+| `npm start` / `npm run dev` | Starts the server |
+| `npm run setup` | Retries downloading any missing tools |
+| `npm run update-tools` | Force-downloads the latest yt-dlp and ffmpeg |
 
-> 💡 YouTube sering mengubah sistemnya. Kalau tiba-tiba semua link gagal, jalankan `npm run update-tools` dulu.
+> 💡 YouTube changes often. If every link suddenly fails, run `npm run update-tools` first.
 
 ---
 
-## Konfigurasi
+## Configuration
 
-Konfigurasi diatur lewat environment variable:
+Configuration is done with environment variables:
 
-| Variable | Default | Fungsi |
+| Variable | Default | Purpose |
 |---|---|---|
-| `PORT` | `3000` | Port server |
-| `HOST` | `127.0.0.1` | Alamat yang didengarkan. `127.0.0.1` = hanya komputer ini. `0.0.0.0` = bisa diakses perangkat lain di jaringan yang sama |
-| `MAX_JOBS` | `3` | Maksimal proses yt-dlp yang berjalan bersamaan. Kalau penuh, server membalas "sibuk" (HTTP 429) |
+| `PORT` | `3000` | Server port |
+| `HOST` | `127.0.0.1` | Bind address. `127.0.0.1` = this computer only. `0.0.0.0` = reachable from other devices on the same network |
+| `MAX_JOBS` | `3` | Maximum yt-dlp processes running at once. When full, the server replies "busy" (HTTP 429) |
 
-Contoh:
+Examples:
 
 ```bash
 # Linux / macOS
@@ -174,62 +171,63 @@ $env:PORT=8080; npm start
 set PORT=8080 && npm start
 ```
 
-### Mengakses dari HP di WiFi yang sama
+### Using it from a phone on the same Wi-Fi
 
 ```bash
 HOST=0.0.0.0 npm start
 ```
 
-Lalu buka `http://<IP-komputer>:3000` dari HP. IP komputer bisa dilihat dengan `ipconfig` (Windows) atau `ip a` (Linux).
+Then open `http://<computer-IP>:3000` on your phone. Find your computer's IP with `ipconfig` (Windows) or `ip a` (Linux).
 
-> ⚠️ Dengan `HOST=0.0.0.0`, **semua perangkat di jaringan itu** bisa memakai aplikasi ini. Jangan lakukan ini di WiFi publik.
+> ⚠️ With `HOST=0.0.0.0`, **every device on that network** can use the app. Don't do this on public Wi-Fi.
 
 ---
 
-## Link yang Didukung
+## Supported Links
 
-| Contoh | Sumber |
+| Example | Source |
 |---|---|
 | `https://music.youtube.com/watch?v=...` | YouTube Music |
 | `https://www.youtube.com/watch?v=...` | YouTube |
 | `https://youtube.com/watch?v=...` | YouTube |
-| `https://m.youtube.com/watch?v=...` | YouTube versi mobile |
-| `https://youtu.be/...` | Link pendek dari tombol Share |
+| `https://m.youtube.com/watch?v=...` | YouTube mobile |
+| `https://youtu.be/...` | Short link from the Share button |
 
-- Parameter tambahan seperti `&si=...` aman.
-- Link yang berada di dalam playlist (`&list=...`) hanya mengunduh **lagu itu saja**, bukan satu playlist.
-- Link dari situs lain akan ditolak.
+- Extra parameters such as `&si=...` are fine.
+- A link that belongs to a playlist (`&list=...`) downloads **only that song**, not the whole playlist.
+- Links from any other site are rejected.
 
 ---
 
-## Struktur Folder
+## Project Structure
 
 ```
 zdownload/
-├── server.js           # Server Express + pemanggil yt-dlp
+├── server.js           # Express server + yt-dlp runner
 ├── package.json
-├── .npmrc              # Menampilkan progres unduhan saat npm install
+├── .npmrc              # Shows download progress during npm install
 ├── scripts/
-│   └── setup.js        # Pengunduh otomatis yt-dlp & ffmpeg (postinstall)
-├── bin/                # Dibuat oleh setup.js (tidak masuk git)
+│   └── setup.js        # Auto-downloads yt-dlp & ffmpeg (postinstall)
+├── bin/                # Created by setup.js (not tracked by git)
 │   ├── yt-dlp(.exe)
-│   ├── ffmpeg(.exe)    # hanya jika ffmpeg sistem tidak ada
+│   ├── ffmpeg(.exe)    # only if no system ffmpeg is found
 │   └── ffprobe(.exe)
 └── public/
-    ├── index.html      # Halaman utama
-    ├── style.css       # Tampilan & animasi
-    └── app.js          # Logika UI + terjemahan ID/EN
+    ├── index.html      # Main page
+    ├── style.css       # Styles & animations
+    ├── app.js          # UI logic + English/Indonesian translations
+    └── favicon.svg / favicon.ico / apple-touch-icon.png
 ```
 
 ---
 
-## Cara Kerja & API
+## How It Works & API
 
-Browser tidak pernah menghubungi YouTube langsung. Server lokal menjalankan **yt-dlp** untuk mengambil audio, lalu **ffmpeg** untuk konversi dan penyematan sampul. File dikirim ke browser, lalu langsung dihapus dari server.
+The browser never talks to YouTube directly. The local server runs **yt-dlp** to fetch the audio and **ffmpeg** to convert it and embed the cover art. The file is sent to the browser and then deleted from the server immediately.
 
 ### `POST /api/info`
 
-Mengambil informasi lagu.
+Fetches track information.
 
 ```json
 // request
@@ -247,57 +245,57 @@ Mengambil informasi lagu.
 
 ### `POST /api/download`
 
-Mengunduh audio. Respons berupa file, dengan nama file di header `Content-Disposition`.
+Downloads the audio. The response is the file itself, with the file name in the `Content-Disposition` header.
 
 ```json
 { "url": "https://youtu.be/4PgOJwUCdIc", "format": "best" }
 ```
 
-| `format` | Hasil |
+| `format` | Result |
 |---|---|
-| `best` | Original, tanpa konversi (`.opus` / `.m4a`) |
+| `best` | Original, no conversion (`.opus` / `.m4a`) |
 | `mp3` | MP3 320 kbps |
 | `flac` | FLAC |
 
-### Kode error
+### Error codes
 
-| Status | Arti |
+| Status | Meaning |
 |---|---|
-| `400` | Link kosong atau bukan link YouTube |
-| `429` | Server sedang memproses terlalu banyak permintaan; coba lagi sebentar |
-| `500` | yt-dlp gagal (lihat log di terminal server untuk detailnya) |
+| `400` | Missing link, or not a YouTube link |
+| `429` | The server is handling too many requests; try again shortly |
+| `500` | yt-dlp failed (details are in the server terminal log) |
 
 ---
 
-## Keamanan
+## Security
 
-Pengaturan bawaan dibuat untuk **pemakaian pribadi**:
+The defaults are designed for **personal use**:
 
-- **Hanya bisa diakses dari komputer sendiri** (`127.0.0.1`), kecuali `HOST` diubah.
-- **Validasi link:** hanya domain YouTube resmi yang diterima. Link dipisahkan dari opsi yt-dlp dengan `--`, jadi isinya tidak bisa disisipi perintah.
-- **Tanpa CORS:** website lain tidak bisa memakai API ini lewat browser kamu.
-- **Pembatasan proses:**
-  - maksimal `MAX_JOBS` proses sekaligus
-  - setiap proses dihentikan setelah 10 menit
-  - proses juga dihentikan kalau tab browser ditutup
-- **Folder sementara terpisah** untuk setiap download, dan selalu dihapus setelah selesai, termasuk kalau gagal.
-- **Detail error teknis** hanya dicatat di terminal server, tidak dikirim ke browser.
+- **Reachable only from your own computer** (`127.0.0.1`) unless you change `HOST`.
+- **Link validation:** only official YouTube domains are accepted. The link is separated from yt-dlp's options with `--`, so it cannot be used to inject commands.
+- **No CORS:** other websites cannot use this API through your browser.
+- **Process limits:**
+  - at most `MAX_JOBS` processes at once
+  - each process is stopped after 10 minutes
+  - a process is also stopped if the browser tab is closed
+- **A separate temp folder** for every download, always deleted afterwards, even when the download fails.
+- **Technical error details** are logged only in the server terminal, never sent to the browser.
 
-Aplikasi ini **tidak punya login maupun rate limit per pengguna**. Jangan membukanya ke internet publik tanpa menambahkan autentikasi.
+The app has **no login and no per-user rate limit**. Don't expose it to the public internet without adding authentication.
 
 ---
 
 ## Deployment
 
-| Platform | Cocok? | Alasan |
+| Platform | Suitable? | Why |
 |---|---|---|
-| **Komputer / server di rumah** + [Tailscale](https://tailscale.com) | ✅ **Disarankan** | IP rumah jarang diblokir YouTube, gratis, dan hanya bisa diakses perangkatmu sendiri |
-| Komputer di rumah + Cloudflare Tunnel | ✅ | Mendapat alamat web tanpa mengatur router. Pasang autentikasi (misalnya Cloudflare Access) |
-| VPS (Hetzner, DigitalOcean, IDCloudHost, dll.) | ⚠️ | Bisa, tapi IP server cloud sering diblokir YouTube |
-| Railway / Render / Fly.io | ⚠️ | Sama seperti VPS, ditambah batasan paket gratis |
-| **Vercel / Netlify / Cloudflare Workers** | ❌ | Serverless: ada batas ukuran respons dan waktu proses, tidak bisa menjalankan yt-dlp dan ffmpeg dengan layak |
+| **Home computer / server** + [Tailscale](https://tailscale.com) | ✅ **Recommended** | Home IPs are rarely blocked by YouTube, it's free, and only your own devices can reach it |
+| Home computer + Cloudflare Tunnel | ✅ | Gives you a public URL without router setup. Add authentication (e.g. Cloudflare Access) |
+| VPS (Hetzner, DigitalOcean, etc.) | ⚠️ | Works, but YouTube often blocks cloud server IPs |
+| Railway / Render / Fly.io | ⚠️ | Same as a VPS, plus free-tier limits |
+| **Vercel / Netlify / Cloudflare Workers** | ❌ | Serverless: response-size and run-time limits, and no proper way to run yt-dlp and ffmpeg |
 
-Di VPS, biasanya YouTube akan meminta *"Sign in to confirm you're not a bot"*. Solusinya adalah memakai cookies dari browser yang sudah login. Fitur ini belum ada di aplikasi ini.
+On a VPS, YouTube will usually ask you to *"Sign in to confirm you're not a bot"*. The fix is to use cookies from a logged-in browser. This app does not support that yet.
 
 ---
 
@@ -306,34 +304,34 @@ Di VPS, biasanya YouTube akan meminta *"Sign in to confirm you're not a bot"*. S
 <details>
 <summary><b>"yt-dlp not found. Please install yt-dlp first."</b></summary>
 
-`bin/yt-dlp` belum ada atau gagal diunduh. Jalankan:
+`bin/yt-dlp` is missing or failed to download. Run:
 
 ```bash
 npm run setup
 ```
 
-Lalu restart server.
+Then restart the server.
 </details>
 
 <details>
-<summary><b>"Gagal mengambil informasi video" untuk semua link</b></summary>
+<summary><b>"Failed to fetch video info" for every link</b></summary>
 
-1. Jalankan `npm run update-tools`. YouTube sering berubah, dan yt-dlp versi lama bisa tiba-tiba gagal.
-2. Lihat pesan error lengkap di **terminal tempat `npm start` dijalankan**.
-3. Pastikan link-nya bisa dibuka di browser, tidak privat, dan tidak dibatasi usia atau wilayah.
+1. Run `npm run update-tools`. YouTube changes often, and an old yt-dlp can suddenly stop working.
+2. Check the full error message in the **terminal where `npm start` is running**.
+3. Make sure the link opens in a browser and isn't private, age-restricted, or region-locked.
 </details>
 
 <details>
 <summary><b>"Sign in to confirm you're not a bot"</b></summary>
 
-IP-mu dianggap mencurigakan oleh YouTube. Ini umum terjadi di VPS atau server cloud. Jalankan aplikasi dari koneksi rumah, atau tunggu beberapa saat.
+YouTube flagged your IP as suspicious. This is common on VPS and cloud servers. Run the app from a home connection, or wait a while.
 </details>
 
 <details>
 <summary><b>"Setup failed: could not extract ffmpeg archive"</b></summary>
 
-- **Linux:** pasang `xz-utils` (`sudo apt install xz-utils`), atau pasang ffmpeg dari sistem (`sudo apt install ffmpeg`), lalu `npm run setup`.
-- **Windows:** butuh Windows 10 versi 1803 atau lebih baru, yang sudah punya `tar` bawaan.
+- **Linux:** install `xz-utils` (`sudo apt install xz-utils`), or install ffmpeg from your package manager (`sudo apt install ffmpeg`), then run `npm run setup`.
+- **Windows:** requires Windows 10 version 1803 or newer, which includes `tar`.
 </details>
 
 <details>
@@ -346,119 +344,60 @@ npm run setup
 </details>
 
 <details>
-<summary><b>Proses <code>npm install</code> terlihat lama atau diam</b></summary>
+<summary><b><code>npm install</code> seems slow or stuck</b></summary>
 
-ffmpeg berukuran ±150–200 MB, jadi di koneksi lambat bisa butuh beberapa menit. Progres akan tampil di layar berkat file `.npmrc`. Kalau terputus, jalankan `npm run setup`.
+ffmpeg is about 150–200 MB, so on a slow connection it can take a few minutes. Progress is shown on screen thanks to the `.npmrc` file. If it gets interrupted, run `npm run setup`.
 </details>
 
 <details>
 <summary><b>"EADDRINUSE: address already in use :::3000"</b></summary>
 
-Port 3000 sudah dipakai aplikasi lain, atau server lama masih berjalan. Matikan server lama (Ctrl+C), atau pakai port lain: `PORT=3001 npm start`.
+Port 3000 is used by another app, or an old server is still running. Stop the old server (Ctrl+C) or use another port: `PORT=3001 npm start`.
 </details>
 
 <details>
-<summary><b>File Original (.opus) tidak bisa diputar</b></summary>
+<summary><b>Original (.opus) files won't play</b></summary>
 
-Beberapa pemutar musik lama tidak mendukung Opus. Pakai VLC atau foobar2000, atau unduh ulang dengan format **MP3**.
+Some older music players don't support Opus. Use VLC or foobar2000, or download again as **MP3**.
 </details>
 
 <details>
 <summary><b>"Server busy, try again shortly." (HTTP 429)</b></summary>
 
-Sudah ada `MAX_JOBS` proses yang berjalan. Tunggu sampai salah satu selesai, atau naikkan batasnya: `MAX_JOBS=5 npm start`.
+`MAX_JOBS` processes are already running. Wait for one to finish, or raise the limit: `MAX_JOBS=5 npm start`.
 </details>
 
 ---
 
-## Keterbatasan yang Diketahui
+## Known Limitations
 
-- **Judul dari video lirik atau video klip** tetap memakai judul videonya, misalnya *"Multo - Cup of Joe (Official Lyric Video)"*. YouTube hanya menyediakan data judul lagu dan artis untuk entri lagu resmi (biasanya dari channel "… - Topic"). Tips: di YouTube Music, pilih versi **lagu** (bukan video) supaya metadatanya rapi.
-- Belum ada dukungan **cookies** untuk akun YouTube Premium (AAC 256 kbps) atau untuk mengatasi blokir di server cloud.
-- Belum mendukung unduhan **satu playlist** sekaligus.
-- Tidak ada autentikasi. Lihat bagian [Keamanan](#keamanan).
-
----
-
-## Disclaimer Hukum
-
-Aplikasi ini dibuat untuk **penggunaan pribadi**.
-
-- [Ketentuan Layanan YouTube](https://www.youtube.com/t/terms) melarang mengunduh konten di luar fitur resmi YouTube.
-- Sebagian besar musik dilindungi **hak cipta**. Unduh hanya konten yang kamu miliki haknya, atau yang lisensinya mengizinkan.
-- Jangan mendistribusikan ulang file hasil unduhan.
-- Menjalankan aplikasi ini sebagai **layanan publik** berisiko terkena klaim DMCA dan pemblokiran akun hosting.
-
-Pengguna bertanggung jawab penuh atas pemakaian aplikasi ini.
+- **Titles from lyric videos and music videos** keep the video's title, for example *"Multo - Cup of Joe (Official Lyric Video)"*. YouTube only provides song-title and artist data for official song entries (usually from "… - Topic" channels). Tip: on YouTube Music, pick the **song** version (not the video) to get clean metadata.
+- No **cookie** support yet, either for YouTube Premium (AAC 256 kbps) or to get past blocks on cloud servers.
+- Downloading a **whole playlist** at once is not supported.
+- No authentication. See [Security](#security).
 
 ---
 
-## Kredit & Lisensi Pihak Ketiga
+## Legal Disclaimer
 
-| Komponen | Fungsi | Lisensi |
+This app is intended for **personal use**.
+
+- The [YouTube Terms of Service](https://www.youtube.com/t/terms) prohibit downloading content outside YouTube's official features.
+- Most music is **copyrighted**. Only download content you own the rights to, or whose license allows it.
+- Don't redistribute downloaded files.
+- Running this app as a **public service** risks DMCA claims and hosting account suspension.
+
+Users are fully responsible for how they use this app.
+
+---
+
+## Credits & Third-Party Licenses
+
+| Component | Purpose | License |
 |---|---|---|
-| [yt-dlp](https://github.com/yt-dlp/yt-dlp) | Mengambil audio dari YouTube | Unlicense |
-| [FFmpeg](https://ffmpeg.org) (build [BtbN](https://github.com/BtbN/FFmpeg-Builds)) | Konversi audio & penyematan sampul | GPL |
+| [yt-dlp](https://github.com/yt-dlp/yt-dlp) | Fetches audio from YouTube | Unlicense |
+| [FFmpeg](https://ffmpeg.org) (build by [BtbN](https://github.com/BtbN/FFmpeg-Builds)) | Audio conversion & cover-art embedding | GPL |
 | [Express](https://expressjs.com) | Web server | MIT |
-| [Plus Jakarta Sans](https://fonts.google.com/specimen/Plus+Jakarta+Sans), [JetBrains Mono](https://fonts.google.com/specimen/JetBrains+Mono) | Font | OFL |
+| [Plus Jakarta Sans](https://fonts.google.com/specimen/Plus+Jakarta+Sans), [JetBrains Mono](https://fonts.google.com/specimen/JetBrains+Mono) | Fonts | OFL |
 
-yt-dlp dan FFmpeg **tidak disertakan** di repository ini. Keduanya diunduh langsung dari sumber resminya saat `npm install`.
-
----
-
-## English
-
-**ZDownload** is a local web app that extracts audio from **YouTube** and **YouTube Music**. Album art and metadata are embedded in the file. The UI is available in Indonesian and English (toggle in the top-right corner).
-
-### Quick start
-
-```bash
-npm install   # also downloads yt-dlp + ffmpeg for your OS into ./bin
-npm start     # open http://localhost:3000
-```
-
-- **Requirements:** Node.js 18+.
-- **macOS:** run `brew install ffmpeg` first.
-- **Linux:** needs `xz` if ffmpeg is not already installed.
-
-### Formats & honest quality notes
-
-YouTube does **not** offer lossless or hi-res audio. Its best stream is around 130–160 kbps Opus.
-
-- **Original** (default): saves that stream untouched. This is the best quality possible.
-- **MP3 320**: a re-encode of Original. Slightly lower quality, plays everywhere.
-- **FLAC**: a lossless copy of the same lossy stream. Same sound as Original, about 13× larger. It reports as 24-bit but is **not** true hi-res.
-
-### Scripts
-
-| Command | Purpose |
-|---|---|
-| `npm start` | Run the server |
-| `npm run setup` | Retry downloading missing tools |
-| `npm run update-tools` | Force-download the latest yt-dlp + ffmpeg (do this when YouTube breaks) |
-
-### Configuration
-
-| Env var | Default | Purpose |
-|---|---|---|
-| `PORT` | `3000` | Server port |
-| `HOST` | `127.0.0.1` | Bind address; `0.0.0.0` exposes it to your LAN |
-| `MAX_JOBS` | `3` | Max concurrent yt-dlp processes |
-
-### Security
-
-The defaults are built for personal use:
-- localhost only
-- YouTube-only URL allowlist, with the URL passed after `--`
-- no CORS
-- concurrency limit, a 10-minute timeout, and per-request temp folders that are always cleaned up
-
-There is **no authentication**, so don't expose it to the public internet as-is.
-
-### Deployment
-
-**Recommended:** a home machine combined with Tailscale. **Not suitable:** serverless platforms like Vercel, Netlify, or Cloudflare Workers, because of response-size and time limits and the external binaries. Cloud/VPS IPs are often blocked by YouTube's bot check.
-
-### Legal
-
-For **personal use only**. Downloading may violate YouTube's Terms of Service, and most music is copyrighted. Only download content you have the rights to. Running this as a public service carries DMCA and hosting-account risk.
+yt-dlp and FFmpeg are **not included** in this repository. Both are downloaded straight from their official sources during `npm install`.
