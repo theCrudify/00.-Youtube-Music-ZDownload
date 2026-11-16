@@ -1,0 +1,19 @@
+{
+  "name": "youtube-music-zdownload",
+  "version": "1.0.0",
+  "description": "Download music from YouTube in MP3 or FLAC format",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js",
+    "postinstall": "node scripts/setup.js",
+    "setup": "node scripts/setup.js",
+    "update-tools": "node scripts/setup.js --force"
+  },
+  "dependencies": {
+    "express": "^4.18.2"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

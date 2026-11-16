@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="color-scheme" content="dark">
+    <title>ZDownload — YouTube Music Audio Extractor</title>
+    <link rel="icon" href="favicon.ico" sizes="32x32">
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <link rel="apple-touch-icon" href="apple-touch-icon.png">
+    <meta name="theme-color" content="#07070b">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="background-effects" aria-hidden="true">
+        <div class="gradient-orb orb-1"></div>
+        <div class="gradient-orb orb-2"></div>
+        <div class="ambient-grid"></div>
+        <div class="noise"></div>
+        <div class="notes">
+            <span>♪</span><span>♫</span><span>♪</span><span>♬</span><span>♩</span><span>♫</span><span>♪</span>
+        </div>
+    </div>
+
+    <!-- Top bar -->
+    <nav class="topbar">
+        <a class="brand" href="/" aria-label="ZDownload">
+            <span class="brand-disc" aria-hidden="true"><span></span></span>
+            <span class="brand-name">ZDownload</span>
+        </a>
+        <div class="lang-switch" role="group" aria-label="Language / Bahasa">
+            <button type="button" class="lang-btn" data-lang="id" aria-pressed="true">ID</button>
+            <button type="button" class="lang-btn" data-lang="en" aria-pressed="false">EN</button>
+            <span class="lang-thumb" aria-hidden="true"></span>
+        </div>
+    </nav>
+
+    <div class="container">
+        <header class="app-header">
+            <div class="brand-badge">
+                <span class="pulse-dot"></span>
+                <span data-i18n="badge">Audio Extractor</span>
+            </div>
+            <h1>
+                <span data-i18n="heroA">Musik favoritmu,</span>
+                <span class="hero-accent" data-i18n="heroB">kualitas terbaik.</span>
+            </h1>
+            <p class="subtitle" data-i18n="subtitle">Ekstrak audio dari YouTube & YouTube Music ke MP3 320kbps atau FLAC
+                Lossless — lengkap dengan sampul album dan metadata.</p>
+        </header>
+
+        <main class="main-content">
+            <!-- URL Input -->
+            <section class="input-section glass-panel">
+                <div class="input-wrapper">
+                    <div class="input-icon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                            stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
+                            <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
+                        </svg>
+                    </div>
+                    <input type="url" id="urlInput" data-i18n-placeholder="placeholder"
+                        placeholder="Tempel link YouTube atau YouTube Music di sini..." autocomplete="off"
+                        spellcheck="false" aria-label="YouTube URL">
+                    <button type="button" id="clearBtn" class="btn-icon hidden" data-i18n-title="clear"
+                        title="Hapus URL" aria-label="Hapus URL">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                            stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="18" y1="6" x2="6" y2="18"></line>
+                            <line x1="6" y1="6" x2="18" y2="18"></line>
+                        </svg>
+                    </button>
+                    <button type="button" id="pasteBtn" class="btn-ghost">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                            stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <rect x="8" y="2" width="8" height="4" rx="1"></rect>
+                            <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path>
+                        </svg>
+                        <span data-i18n="paste">Tempel</span>
+                    </button>
+                    <button type="button" id="fetchBtn" class="btn-primary">
+                        <span class="btn-loader" aria-hidden="true"></span>
+                        <span class="btn-text" data-i18n="analyze">Analisis</span>
+                        <svg class="btn-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                            stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <line x1="5" y1="12" x2="19" y2="12"></line>
+                            <polyline points="12 5 19 12 12 19"></polyline>
+                        </svg>
+                    </button>
+                </div>
+
+                <div class="visualizer-container" id="audioVis" aria-live="polite">
+                    <div class="vis-bars" aria-hidden="true">
+                        <div class="vis-bar"></div><div class="vis-bar"></div><div class="vis-bar"></div>
+                        <div class="vis-bar"></div><div class="vis-bar"></div><div class="vis-bar"></div>
+                        <div class="vis-bar"></div><div class="vis-bar"></div><div class="vis-bar"></div>
+                        <div class="vis-bar"></div><div class="vis-bar"></div><div class="vis-bar"></div>
+                    </div>
+                    <span class="vis-status" id="visStatus"></span>
+                </div>
+
+                <div class="scanner-container" aria-hidden="true">
+                    <div class="scanner-bar"></div>
+                </div>
+            </section>
+
+            <div id="errorMsg" class="error-message hidden" role="alert"></div>
+
+            <!-- How it works (shown while idle) -->
+            <ol class="steps" id="steps">
+                <li>
+                    <span class="step-num">01</span>
+                    <span class="step-title" data-i18n="step1t">Tempel link</span>
+                    <span class="step-desc" data-i18n="step1d">Salin URL lagu dari YouTube atau YouTube Music.</span>
+                </li>
+                <li>
+                    <span class="step-num">02</span>
+                    <span class="step-title" data-i18n="step2t">Pilih format</span>
+                    <span class="step-desc" data-i18n="step2d">MP3 untuk ukuran ringkas, FLAC untuk kualitas penuh.</span>
+                </li>
+                <li>
+                    <span class="step-num">03</span>
+                    <span class="step-title" data-i18n="step3t">Unduh</span>
+                    <span class="step-desc" data-i18n="step3d">File langsung tersimpan beserta sampul & metadata.</span>
+                </li>
+            </ol>
+
+            <!-- Track Details -->
+            <section id="videoInfo" class="video-info glass-panel hidden">
+                <div class="cover-backdrop" id="coverBackdrop" aria-hidden="true"></div>
+                <div class="video-thumbnail">
+                    <img id="thumbnail" src="" alt="">
+                    <div class="duration-badge" id="duration">0:00</div>
+                </div>
+
+                <div class="video-details">
+                    <div class="track-meta">
+                        <span class="track-tag" data-i18n="detected">Track terdeteksi</span>
+                        <h2 id="videoTitle"></h2>
+                        <p id="uploader" class="uploader"></p>
+                    </div>
+
+                    <fieldset class="format-section">
+                        <legend class="section-label" data-i18n="chooseFormat">Pilih format audio</legend>
+                        <div class="format-selector">
+                            <label class="format-option">
+                                <input type="radio" name="format" value="best" checked>
+                                <span class="format-card">
+                                    <span class="format-header">
+                                        <span class="radio-dot" aria-hidden="true"></span>
+                                        <span class="format-name">Original</span>
+                                        <span class="format-badge badge-hires" data-i18n="origBadge">Terbaik</span>
+                                    </span>
+                                    <span class="format-desc" data-i18n="origDesc"></span>
+                                </span>
+                            </label>
+                            <label class="format-option">
+                                <input type="radio" name="format" value="mp3">
+                                <span class="format-card">
+                                    <span class="format-header">
+                                        <span class="radio-dot" aria-hidden="true"></span>
+                                        <span class="format-name">MP3</span>
+                                        <span class="format-badge">320 kbps</span>
+                                    </span>
+                                    <span class="format-desc" data-i18n="mp3Desc">Kompatibel di semua perangkat, ukuran
+                                        efisien</span>
+                                </span>
+                            </label>
+                            <label class="format-option">
+                                <input type="radio" name="format" value="flac">
+                                <span class="format-card">
+                                    <span class="format-header">
+                                        <span class="radio-dot" aria-hidden="true"></span>
+                                        <span class="format-name">FLAC</span>
+                                        <span class="format-badge" data-i18n="flacBadge">Tanpa loss tambahan</span>
+                                    </span>
+                                    <span class="format-desc" data-i18n="flacDesc">Tanpa kompresi ulang, file lebih besar</span>
+                                </span>
+                            </label>
+                        </div>
+                    </fieldset>
+
+                    <button type="button" id="downloadBtn" class="btn-download">
+                        <span class="btn-loader" aria-hidden="true"></span>
+                        <svg class="download-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                            <polyline points="7 10 12 15 17 10"></polyline>
+                            <line x1="12" y1="15" x2="12" y2="3"></line>
+                        </svg>
+                        <span class="btn-text" data-i18n="download">Unduh Audio Sekarang</span>
+                    </button>
+
+                    <div class="scanner-container" aria-hidden="true">
+                        <div class="scanner-bar"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Download Ready -->
+            <section id="downloadResult" class="download-result glass-panel hidden">
+                <div class="result-content">
+                    <div class="success-icon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                            stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="20 6 9 17 4 12"></polyline>
+                        </svg>
+                    </div>
+                    <div class="result-text">
+                        <h3 data-i18n="ready">Berhasil diunduh ke folder Downloads</h3>
+                        <p id="fileName">zdownload_audio.mp3</p>
+                    </div>
+                </div>
+                <a id="downloadLink" href="#" class="btn-download-file" download>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                        <polyline points="7 10 12 15 17 10"></polyline>
+                        <line x1="12" y1="15" x2="12" y2="3"></line>
+                    </svg>
+                    <span data-i18n="save">Unduh ulang</span>
+                </a>
+            </section>
+        </main>
+
+        <footer class="app-footer">
+            <ul class="feature-chips">
+                <li data-i18n="chip1">Sampul album otomatis</li>
+                <li data-i18n="chip2">Metadata artis & judul</li>
+                <li data-i18n="chip3">Tanpa iklan</li>
+            </ul>
+            <p data-i18n="footer">Gunakan hanya untuk konten yang kamu miliki haknya.</p>
+        </footer>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+
+</html>

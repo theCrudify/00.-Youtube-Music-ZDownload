@@ -1,0 +1,7 @@
+node_modules/
+bin/
+# old manually-copied tools (now downloaded into bin/ by npm install)
+*.exe
+*.zip
+ffmpeg-master-latest-*/
+yt-dlp
