@@ -3,7 +3,7 @@ const I18N = {
         badge: 'Audio Extractor',
         heroA: 'Musik favoritmu,',
         heroB: 'kualitas terbaik.',
-        subtitle: 'Ekstrak audio dari YouTube & YouTube Music ke MP3 320kbps atau FLAC dari stream audio terbaik yang tersedia — lengkap dengan sampul album dan metadata.',
+        subtitle: 'Ekstrak audio dari YouTube & YouTube Music ke format Original, MP3 320kbps, atau FLAC — lengkap dengan sampul album dan metadata.',
         placeholder: 'Tempel link YouTube atau YouTube Music di sini...',
         clear: 'Hapus URL',
         paste: 'Tempel',
@@ -14,16 +14,17 @@ const I18N = {
         step3t: 'Unduh', step3d: 'File langsung tersimpan beserta sampul & metadata.',
         detected: 'Track terdeteksi',
         chooseFormat: 'Pilih format audio',
-        mp3Desc: 'Diputar di semua perangkat. Dikonversi ulang, jadi sedikit di bawah Original',
-        flacDesc: 'Tanpa kompresi ulang, file lebih besar. Kualitas maksimal tetap sebatas sumber YouTube.',
-        flacBadge: 'Tanpa loss tambahan',
-        origBadge: 'Terbaik',
-        origDesc: 'Stream asli YouTube tanpa konversi (Opus/M4A). Kualitas tertinggi yang ada.',
+        mp3Desc: 'Kompatibel di semua perangkat. Dikonversi ulang dari stream YouTube.',
+        flacDesc: 'Format lossless tanpa kompresi ulang tambahan. File lebih besar.',
+        flacBadge: 'Lossless',
+        origBadge: 'Stream Asli',
+        origDesc: 'Stream asli YouTube tanpa konversi ulang (Opus/M4A). Kualitas tertinggi.',
         download: 'Unduh Audio Sekarang',
         extracting: 'Mengekstrak {f}...',
-        ready: 'Berhasil diunduh ke folder Downloads',
+        ready: 'Audio berhasil diekstrak & diunduh',
         save: 'Unduh ulang',
         chip1: 'Sampul album otomatis', chip2: 'Metadata artis & judul', chip3: 'Tanpa iklan',
+        createdBy: 'Dibuat dengan ❤️ oleh',
         footer: 'Gunakan hanya untuk konten yang kamu miliki haknya.',
         visInfo: 'Mengambil informasi lagu dari YouTube...',
         visExtract: 'Mengekstrak audio kualitas tinggi ({f})...',
@@ -38,7 +39,7 @@ const I18N = {
         badge: 'Audio Extractor',
         heroA: 'Your favorite music,',
         heroB: 'best available quality.',
-        subtitle: 'Extract audio from YouTube & YouTube Music to 320kbps MP3 or FLAC from the best available audio stream — complete with album art and metadata.',
+        subtitle: 'Extract audio from YouTube & YouTube Music to Original, 320kbps MP3, or FLAC — complete with album art and metadata.',
         placeholder: 'Paste a YouTube or YouTube Music link here...',
         clear: 'Clear URL',
         paste: 'Paste',
@@ -49,16 +50,17 @@ const I18N = {
         step3t: 'Download', step3d: 'Saved instantly with cover art & metadata.',
         detected: 'Track detected',
         chooseFormat: 'Choose audio format',
-        mp3Desc: 'Plays on every device. Re-encoded, so slightly below Original',
-        flacDesc: 'No re-compression, larger file. Quality is still capped by the YouTube source.',
-        flacBadge: 'No extra loss',
-        origBadge: 'Best',
-        origDesc: 'Original YouTube stream, no conversion (Opus/M4A). Highest quality available.',
+        mp3Desc: 'Plays on every device. Re-encoded from the YouTube stream.',
+        flacDesc: 'Lossless container without extra compression. Larger file size.',
+        flacBadge: 'Lossless',
+        origBadge: 'Original Stream',
+        origDesc: 'Untouched YouTube stream without re-encoding (Opus/M4A). Best quality.',
         download: 'Download Audio Now',
         extracting: 'Extracting {f}...',
-        ready: 'Saved to your Downloads folder',
+        ready: 'Audio successfully extracted & downloaded',
         save: 'Download again',
         chip1: 'Auto album art', chip2: 'Artist & title metadata', chip3: 'No ads',
+        createdBy: 'Crafted with ❤️ by',
         footer: 'Only use for content you have the rights to.',
         visInfo: 'Fetching track info from YouTube...',
         visExtract: 'Extracting high-quality audio ({f})...',
@@ -107,20 +109,25 @@ document.addEventListener('DOMContentLoaded', () => {
             el.title = t(el.dataset.i18nTitle);
             el.setAttribute('aria-label', el.title);
         });
-        document.getElementById('thumbnail').alt = t('thumbAlt');
-        langSwitch.dataset.active = lang;
-        langSwitch.querySelectorAll('.lang-btn').forEach(b => b.setAttribute('aria-pressed', b.dataset.lang === lang));
+        const thumb = document.getElementById('thumbnail');
+        if (thumb) thumb.alt = t('thumbAlt');
+        if (langSwitch) {
+            langSwitch.dataset.active = lang;
+            langSwitch.querySelectorAll('.lang-btn').forEach(b => b.setAttribute('aria-pressed', b.dataset.lang === lang));
+        }
     }
 
-    langSwitch.addEventListener('click', (e) => {
-        const btn = e.target.closest('.lang-btn');
-        if (!btn || btn.dataset.lang === lang) return;
-        lang = btn.dataset.lang;
-        try { localStorage.setItem('zd-lang', lang); } catch { }
-        // don't clobber button labels mid-request
-        if (fetchBtn.disabled || downloadBtn.disabled) return;
-        applyLang();
-    });
+    if (langSwitch) {
+        langSwitch.addEventListener('click', (e) => {
+            const btn = e.target.closest('.lang-btn');
+            if (!btn || btn.dataset.lang === lang) return;
+            lang = btn.dataset.lang;
+            try { localStorage.setItem('zd-lang', lang); } catch { }
+            // don't clobber button labels mid-request
+            if (fetchBtn.disabled || downloadBtn.disabled) return;
+            applyLang();
+        });
+    }
 
     applyLang();
 
@@ -158,16 +165,16 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function startVisualizer(statusText) {
-        visStatus.textContent = statusText;
+        if (visStatus) visStatus.textContent = statusText;
         audioVis.classList.add('active');
         document.body.classList.add('busy');
         clearInterval(visInterval);
         visInterval = setInterval(() => {
             visBars.forEach(bar => {
-                bar.style.height = `${Math.floor(Math.random() * 18) + 4}px`;
+                bar.style.height = `${Math.floor(Math.random() * 20) + 4}px`;
                 bar.style.opacity = (Math.random() * 0.4 + 0.6).toFixed(2);
             });
-        }, 110);
+        }, 100);
     }
 
     function stopVisualizer() {
@@ -234,7 +241,8 @@ document.addEventListener('DOMContentLoaded', () => {
             document.getElementById('thumbnail').src = data.thumbnail;
             document.getElementById('coverBackdrop').style.setProperty('--cover', `url("${data.thumbnail}")`);
             document.getElementById('videoTitle').textContent = data.title;
-            document.getElementById('uploader').textContent = data.uploader || t('channel');
+            const uploaderTarget = document.getElementById('uploaderName') || document.getElementById('uploader');
+            uploaderTarget.textContent = data.uploader || t('channel');
             document.getElementById('duration').textContent = formatDuration(data.duration);
 
             steps.classList.add('hidden');
@@ -283,7 +291,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             const blob = await response.blob();
-            if (lastBlobUrl) URL.revokeObjectURL(lastBlobUrl); // free the previous file from memory
+            if (lastBlobUrl) URL.revokeObjectURL(lastBlobUrl); // free memory
             const downloadUrl = lastBlobUrl = URL.createObjectURL(blob);
 
             document.getElementById('fileName').textContent = fileName;
@@ -324,11 +332,11 @@ document.addEventListener('DOMContentLoaded', () => {
         container.style.top = `${y}px`;
         document.body.appendChild(container);
 
-        for (let i = 0; i < 24; i++) {
+        for (let i = 0; i < 28; i++) {
             const p = document.createElement('div');
             p.className = 'particle';
             const angle = Math.random() * Math.PI * 2;
-            const velocity = Math.random() * 90 + 40;
+            const velocity = Math.random() * 95 + 40;
             p.style.setProperty('--tx', `${Math.cos(angle) * velocity}px`);
             p.style.setProperty('--ty', `${Math.sin(angle) * velocity}px`);
             container.appendChild(p);
@@ -339,7 +347,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     document.addEventListener('mousemove', (e) => {
         document.querySelectorAll('.gradient-orb').forEach((orb, index) => {
-            const factor = (index + 1) * 0.015;
+            const factor = (index + 1) * 0.012;
             orb.style.marginLeft = `${(e.clientX - window.innerWidth / 2) * factor}px`;
             orb.style.marginTop = `${(e.clientY - window.innerHeight / 2) * factor}px`;
         });

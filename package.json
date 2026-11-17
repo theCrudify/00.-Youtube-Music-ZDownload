@@ -3,6 +3,11 @@
   "version": "1.0.0",
   "description": "Download music from YouTube in MP3 or FLAC format",
   "main": "server.js",
+  "author": "theCrudify <jidanfatahillah2003@gmail.com>",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/theCrudify/00.-Youtube-Music-ZDownload.git"
+  },
   "scripts": {
     "start": "node server.js",
     "dev": "node server.js",

@@ -23,6 +23,7 @@ The interface is available in **English** and **Indonesian** (toggle in the top-
 - [Troubleshooting](#troubleshooting)
 - [Known Limitations](#known-limitations)
 - [Legal Disclaimer](#legal-disclaimer)
+- [Author](#author)
 - [Credits & Third-Party Licenses](#credits--third-party-licenses)
 
 ---
@@ -388,6 +389,12 @@ This app is intended for **personal use**.
 - Running this app as a **public service** risks DMCA claims and hosting account suspension.
 
 Users are fully responsible for how they use this app.
+
+---
+
+## Author
+
+Developed and maintained with ❤️ by **theCrudify** ([@theCrudify](https://github.com/theCrudify)).
 
 ---
 
