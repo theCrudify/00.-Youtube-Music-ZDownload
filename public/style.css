@@ -871,13 +871,14 @@ body.busy .brand-disc {
 
 .format-selector {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 12px;
+    grid-template-columns: 1fr;
+    gap: 8px;
 }
 
 .format-option {
     position: relative;
     cursor: pointer;
+    min-width: 0;
 }
 
 .format-option input {
@@ -924,7 +925,6 @@ body.busy .brand-disc {
 .format-header {
     display: flex;
     align-items: center;
-    justify-content: space-between;
     gap: 8px;
 }
 
@@ -932,6 +932,7 @@ body.busy .brand-disc {
     font-weight: 800;
     font-size: 0.96rem;
     color: var(--text-primary);
+    margin-right: auto;
 }
 
 .format-badge {
@@ -942,6 +943,7 @@ body.busy .brand-disc {
     color: var(--text-secondary);
     text-transform: uppercase;
     letter-spacing: 0.04em;
+    white-space: nowrap;
 }
 
 /* Format specific colors */
@@ -1302,10 +1304,6 @@ body.busy .brand-disc {
         grid-template-columns: 1fr;
         padding: 20px;
         gap: 20px;
-    }
-
-    .format-selector {
-        grid-template-columns: 1fr;
     }
 
     .steps {

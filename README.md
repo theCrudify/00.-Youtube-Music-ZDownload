@@ -4,6 +4,10 @@ A local web app that extracts audio from **YouTube** and **YouTube Music**. Albu
 
 The interface is available in **English** and **Indonesian** (toggle in the top-right corner).
 
+[![ZDownload demo video](docs/preview.jpg)](docs/ZDownload-demo.mp4)
+
+▶️ **[Watch the 50-second demo](docs/ZDownload-demo.mp4)**: installation, a real download, and which format to pick.
+
 ---
 
 ## Table of Contents
@@ -207,6 +211,9 @@ zdownload/
 ├── server.js           # Express server + yt-dlp runner
 ├── package.json
 ├── .npmrc              # Shows download progress during npm install
+├── docs/
+│   ├── ZDownload-demo.mp4  # Demo video
+│   └── preview.jpg
 ├── scripts/
 │   └── setup.js        # Auto-downloads yt-dlp & ffmpeg (postinstall)
 ├── bin/                # Created by setup.js (not tracked by git)
